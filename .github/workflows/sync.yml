@@ -1,0 +1,39 @@
+name: Sync
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Run every 6 hours
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/kubernetes/kubernetes.git
+          git fetch upstream
+
+      - name: Sync with upstream
+        run: |
+          git checkout master
+          git rebase upstream/master -X ours --autostash 
+          git push -f origin master
+
+      - name: Handle errors
+        if: failure()
+        run: |
+          echo "::error::Failed to sync with upstream. Please check the logs."
