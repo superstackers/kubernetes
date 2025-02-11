@@ -1,0 +1,31 @@
+version: v2
+modules:
+  - path: vendor
+    name: buf.build/ctnr-io/kubernetes-vendor
+    excludes:
+      - vendor/github.com/containerd/ttrpc
+      - vendor/github.com/google/gnostic-models/openapiv3
+      - vendor/go.etcd.io/etcd/api/v3/authpb
+      - vendor/go.etcd.io/etcd/api/v3/etcdserverpb
+      - vendor/go.etcd.io/etcd/api/v3/membershippb
+      - vendor/go.etcd.io/etcd/api/v3/mvccpb
+      - vendor/go.etcd.io/etcd/raft/v3/raftpb
+      - vendor/go.etcd.io/etcd/server/v3/etcdserver/api/snap/snappb
+      - vendor/go.etcd.io/etcd/server/v3/etcdserver/api/v3election/v3electionpb
+      - vendor/go.etcd.io/etcd/server/v3/etcdserver/api/v3lock/v3lockpb
+      - vendor/go.etcd.io/etcd/server/v3/lease/leasepb
+      - vendor/go.etcd.io/etcd/server/v3/wal/walpb
+  - path: staging/src
+    name: buf.build/ctnr-io/kubernetes
+    excludes:
+      - staging/src/k8s.io/kubelet/pkg/apis/pluginregistration/v1beta1
+      - staging/src/k8s.io/kubelet/pkg/apis/pluginregistration/v1alpha1
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - DEFAULT
+  except:
+    - PACKAGE_VERSION_SUFFIX
+    - PACKAGE_DIRECTORY_MATCH
