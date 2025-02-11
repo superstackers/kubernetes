@@ -1,0 +1,32 @@
+name: Buf Publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Buf
+        uses: bufbuild/buf-setup-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Lint Protos
+      #   uses: bufbuild/buf-lint-action@v1
+
+      - name: Push to Registry
+        uses: bufbuild/buf-push-action@v1
+        with:
+          buf_token: ${{ secrets.BUF_TOKEN }}
+          draft: false
+
+      - name: Handle errors
+        if: failure()
+        run: |
+          echo "::error::Failed to publish. Please check the logs and ensure BUF_TOKEN is set in repository secrets."
